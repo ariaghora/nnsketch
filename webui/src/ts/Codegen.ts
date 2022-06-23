@@ -26,6 +26,21 @@ const createReturnStatement = function (value: string[]) {
     };
 };
 
+const createClassMethodDeclaration = function (
+    name: string,
+    params: Object[],
+    body: Object[],
+    returnType: string
+) {
+    return {
+        type: "ClassMethod",
+        name: name,
+        params: params,
+        body: body,
+        returnType: returnType,
+    };
+}
+
 const createImportDeclaration = function (
     source: string,
     specifiers: any[],
@@ -250,6 +265,7 @@ export {
     createIdentifier,
     createReturnStatement,
     createImportDeclaration,
+    createClassMethodDeclaration,
     newLine,
     generatePythonCode
 };

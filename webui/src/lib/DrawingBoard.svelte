@@ -2,7 +2,6 @@
     import "@svgdotjs/svg.draggable.js";
     import { onMount } from "svelte";
     import { DrawingBoard } from "../ts/DrawingBoard";
-    import DrawingBoardSourceOutput from "./DrawingBoardSourceOutput.svelte";
     import DrawingToolbar from "./DrawingToolbar.svelte";
 
     /**

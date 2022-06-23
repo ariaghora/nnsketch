@@ -1,36 +1,48 @@
 <script lang="ts">
     import type { ModuleNode } from "src/ts/ModuleNode";
     import type { DrawingBoard } from "src/ts/DrawingBoard";
+    import DrawingBoardSourceOutput from "./DrawingBoardSourceOutput.svelte";
     import {
         createIdentifier,
         createImportDeclaration,
         createReturnStatement,
         createVariableDeclaration,
+        createClassMethodDeclaration,
         newLine,
         generatePythonCode,
     } from "../ts/Codegen";
-    import DrawingBoardSourceOutput from "./DrawingBoardSourceOutput.svelte";
 
     export let drawingBoard: DrawingBoard;
 
-    let python_code: string;
+    let generated_python_code: string;
+
+    const camelToSnake = (str: string) => {
+        let result = "";
+        for (let i = 0; i < str.length; i++) {
+            if (str[i] === str[i].toUpperCase()) {
+                if (i > 0) {
+                    result += "_";
+                }
+            }
+            result += str[i].toLowerCase();
+        }
+        return result;
+    };
+
     const btnGeneratePythonCodeOnClick = function (e: MouseEvent) {
-        let inputNodes: ModuleNode[] = [];
-        let outputNodes: ModuleNode[] = [];
-        let initMethod = {
-            type: "ClassMethod",
-            name: "__init__",
-            params: [],
-            body: [],
-            returnType: null,
-        };
-        let forwardMethod = {
-            type: "ClassMethod",
-            name: "forward",
-            params: [],
-            body: [],
-            returnType: null,
-        };
+        const initMethod = createClassMethodDeclaration(
+            "__init__",
+            [],
+            [],
+            null
+        );
+        const forwardMethod = createClassMethodDeclaration(
+            "forward",
+            [],
+            [],
+            null
+        );
+
         let pyModule = {
             type: "Program",
             body: [
@@ -45,12 +57,22 @@
                 },
             ],
         };
+
         for (let node of drawingBoard.moduleNodes) {
             if (node.name === "Input") {
+                /**
+                 * If the node is an input node, we need to add it as a parameter to the
+                 * forward method.
+                 */
                 forwardMethod.params.push(
                     createIdentifier(node.varName, "torch.Tensor")
                 );
             } else if (node.name === "Conv2d") {
+                /**
+                 * Generate necessary layers as class properties. If the layer has learnable
+                 * parameters (e.g., Conv2d, Linear), they will be generated as class properties.
+                 * Otherwise, they will not be generated.
+                 */
                 initMethod.body.push(
                     createVariableDeclaration(
                         "self." + node.varName,
@@ -59,19 +81,6 @@
                 );
             }
         }
-
-        const camelToSnake = (str: string) => {
-            let result = "";
-            for (let i = 0; i < str.length; i++) {
-                if (str[i] === str[i].toUpperCase()) {
-                    if (i > 0) {
-                        result += "_";
-                    }
-                }
-                result += str[i].toLowerCase();
-            }
-            return result;
-        };
 
         // Topological sort to create assignment statements,
         // starting from output nodes
@@ -125,8 +134,7 @@
         }
         forwardMethod.body.push(createReturnStatement(outputVarNames));
 
-        python_code = generatePythonCode(pyModule);
-        console.log(python_code);
+        generated_python_code = generatePythonCode(pyModule);
         document.getElementById("source-output").style.display = "block";
     };
 </script>
@@ -150,7 +158,7 @@
     </ul>
 </div>
 
-<DrawingBoardSourceOutput {python_code} />
+<DrawingBoardSourceOutput python_code={generated_python_code} />
 
 <style lang="scss">
     #toolbar {

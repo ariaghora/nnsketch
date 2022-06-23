@@ -199,67 +199,6 @@ const generatePythonCode = function (syntaxTree: any) {
     return code;
 };
 
-const getSyntaxTreeBaseTemplate = function () {
-    const initMethod = {
-        type: "ClassMethod",
-        id: {
-            type: "Identifier",
-            name: "__init__",
-        },
-        returnType: "None",
-        params: [
-            createIdentifier("self", "self"),
-        ],
-        body: [],
-    };
-
-    const forwardMethod = {
-        type: "ClassMethod",
-        id: {
-            type: "Identifier",
-            name: "forward",
-        },
-        params: [
-            createIdentifier("self", "self"),
-            createIdentifier("input", "torch.Tensor"),
-        ],
-        returnType: "torch.Tensor",
-        body: [],
-    };
-
-    const mainClass = {
-        type: "ClassDeclaration",
-        id: {
-            type: "Identifier",
-            name: "MyModel",
-        },
-        superClass: null,
-        body: [initMethod, forwardMethod],
-    };
-
-    const syntaxTree = {
-        type: "BlockStatement",
-        body: [
-            createImportDeclaration("torch", [], null, null),
-            newLine(2),
-            mainClass,
-        ],
-    };
-
-    forwardMethod.body.push(
-        createVariableDeclaration("conv_1_out", "self.conv_1(input)")
-    );
-    forwardMethod.body.push(
-        createReturnStatement({
-            type: "Identifier",
-            name: "conv_1_out",
-        })
-    );
-
-    return syntaxTree;
-}
-
-
 export {
     createVariableDeclaration,
     createIdentifier,

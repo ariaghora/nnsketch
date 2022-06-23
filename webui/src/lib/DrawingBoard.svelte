@@ -70,7 +70,7 @@
             "node-selector-input"
         );
         nodeSelectorInput.focus();
-        nodeSelectorInput.value = "";
+        (nodeSelectorInput as HTMLInputElement).value = "";
         filtered_editor_nodes = editor_nodes;
     };
 

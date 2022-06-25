@@ -194,6 +194,7 @@ export class ModuleNode {
             family: "var(--monospace-font)",
             size: "12px",
             anchor: "middle",
+            fill: "var(--node-foreground-color)"
         });
         let labelWidth = label.node.clientWidth;
         let labelHeight = label.node.clientHeight;

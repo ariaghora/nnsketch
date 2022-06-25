@@ -34,11 +34,12 @@
         --source-output-panel-width: 50%;
 
         --background-color-1: #dcdcdc;
-        --drawing-board-background-color: #747474;
-        --node-background-color: #dcdccb;
-        --node-border-color: #e3e30a;
-        --node-input-color: #2c9d6a;
-        --node-output-color: #9d2c6a;
+        --drawing-board-background-color: #181818;
+        --node-background-color: #303030;
+        --node-foreground-color: #cecece;
+        --node-border-color: #7d9184;
+        --node-input-color: #27cc8f;
+        --node-output-color: #d42d89;
         --node-output-color-selected: #a95e88;
         --node-output-stroke-selected: #f5a5d1;
         --link-color: #ffffff;

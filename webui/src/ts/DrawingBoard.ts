@@ -31,7 +31,7 @@ export class DrawingBoard {
         this.connectingMode = false;
         this.connectingModeStartNode = null;
         this.connectingModeEndNode = null;
-        this.smallGridSize = 12;
+        this.smallGridSize = 10;
         this.syntaxTree = null;
         this.layerTypeCounter = {};
         this.outputModuleNodes = [];

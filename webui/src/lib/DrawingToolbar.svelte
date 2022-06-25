@@ -110,7 +110,8 @@
         forwardMethod.body.push(createReturnStatement(outputVarNames));
 
         generated_python_code = generatePythonCode(pyModule);
-        document.getElementById("source-output").style.display = "block";
+        document.getElementById("source-output-bg-overlay").style.display =
+            "block";
 
         // reset all nodes' evaluated flag
         for (let node of drawingBoard.moduleNodes) {
@@ -143,7 +144,7 @@
 <style lang="scss">
     #toolbar {
         position: fixed;
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: var(--header-background-color);
         left: calc(50% - 75px);
         top: 50px;
         width: 150px;

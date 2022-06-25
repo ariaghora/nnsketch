@@ -1,6 +1,7 @@
 <script lang="ts">
     const btnCloseOnClick = function (e: MouseEvent) {
-        document.getElementById("source-output").style.display = "none";
+        document.getElementById("source-output-bg-overlay").style.display =
+            "none";
     };
     export let python_code: string;
 </script>
@@ -20,32 +21,43 @@
         src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
 </svelte:head>
 
-<div id="source-output">
-    <div id="source-output-header">
-        <div id="source-output-header-title">
-            <i class="fas fa-code" />
-            <span>Source Code</span>
+<div id="source-output-bg-overlay">
+    <div id="source-output">
+        <div id="source-output-header">
+            <div id="source-output-header-title">
+                <i class="fas fa-code" />
+                <span>Source Code</span>
+            </div>
+            <div id="source-output-header-close">
+                <span id="btn-close" on:click={btnCloseOnClick}>
+                    <i class="fas fa-times" />
+                </span>
+            </div>
         </div>
-        <div id="source-output-header-close">
-            <span id="btn-close" on:click={btnCloseOnClick}>
-                <i class="fas fa-times" />
-            </span>
+        <div
+            class="code"
+            name="text-source-output"
+            id="text-source-output"
+            cols="30"
+            rows="10"
+        >
+            <pre>{python_code}</pre>
         </div>
-    </div>
-    <div
-        class="code"
-        name="text-source-output"
-        id="text-source-output"
-        cols="30"
-        rows="10"
-    >
-        <pre>{python_code}</pre>
     </div>
 </div>
 
 <style lang="scss">
-    #source-output {
+    #source-output-bg-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        z-index: 9999;
         display: none;
+    }
+    #source-output {
         position: absolute;
         top: var(--source-output-panel-top);
         left: calc(50vw - var(--source-output-panel-width) / 2);

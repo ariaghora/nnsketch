@@ -102,8 +102,6 @@ export class DrawingBoard {
                 node.nIn,
                 node.nOut,
             )
-            this.moduleNodes[this.moduleNodes.length - 1].outLinks = new Array(node.nOut);
-            this.moduleNodes[this.moduleNodes.length - 1].inLinks = new Array(node.nIn);
         });
 
         graphData.links.forEach(link => {
@@ -136,8 +134,8 @@ export class DrawingBoard {
                 line
             );
 
-            source.outLinks[sourceCircleIndex] = moduleLink;
-            target.inLinks[targetCircleIndex] = moduleLink;
+            source.outLinks.push(moduleLink);
+            target.inLinks.push(moduleLink);
 
             moduleLink.updateLinePosition()
         });

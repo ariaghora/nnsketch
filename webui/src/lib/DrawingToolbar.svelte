@@ -16,19 +16,6 @@
 
     let generated_python_code: string;
 
-    const camelToSnake = (str: string) => {
-        let result = "";
-        for (let i = 0; i < str.length; i++) {
-            if (str[i] === str[i].toUpperCase()) {
-                if (i > 0) {
-                    result += "_";
-                }
-            }
-            result += str[i].toLowerCase();
-        }
-        return result;
-    };
-
     const btnGeneratePythonCodeOnClick = function (e: MouseEvent) {
         const initMethod = createClassMethodDeclaration(
             "__init__",
@@ -82,6 +69,46 @@
             }
         }
 
+        const LEARNABLE_LAYER_TYPES = [
+            "Conv2d",
+            "Linear",
+            "BatchNorm2d",
+            "Dropout",
+        ];
+
+        const NONLEARNABLE_LAYER_TYPES = [
+            "Flatten",
+            "ReLU",
+            "Tanh",
+            "Sigmoid",
+            "Softmax",
+            "Softmax2d",
+            "LogSoftmax",
+            "LogSigmoid",
+            "Identity",
+            "MaxPool2d",
+            "AvgPool2d",
+            "AdaptiveAvgPool2d",
+            "AdaptiveMaxPool2d",
+            "Upsample",
+            "UpsampleNearest2d",
+            "UpsampleBilinear2d",
+            "UpsampleTrilinear2d",
+            "Pad",
+            "ReflectionPad",
+            "ReplicationPad",
+            "ReplicationPad2d",
+            "ReplicationPad3d",
+            "ZeroPad2d",
+            "ZeroPad3d",
+            "ConstantPad2d",
+            "ConstantPad3d",
+            "ConstantPad1d",
+            "ConstantPad2d",
+            "ConstantPad3d",
+            "Add",
+        ];
+
         // Topological sort to create assignment statements,
         // starting from output nodes
         let visited = {};
@@ -89,29 +116,14 @@
             for (let prevNode of node.prevNodes) {
                 if (!visited[prevNode.varName]) {
                     visit(prevNode);
-                    // If the layer contains learnable parameters,
-                    // add it as a class attribute in init method
-                    if (prevNode.type === "Conv2d") {
+                    const lhs = prevNode.outVarName;
+                    const rhs = prevNode.evalForCodegen();
+                    if (lhs == null || rhs == null) {
+                        continue;
+                    }
+                    if (lhs !== rhs) {
                         forwardMethod.body.push(
-                            createVariableDeclaration(
-                                prevNode.outVarName,
-                                "self." +
-                                    prevNode.varName +
-                                    "(" +
-                                    prevNode.prevNodes[0].outVarName +
-                                    ")"
-                            )
-                        );
-                    } else if (prevNode.type === "MaxPool2d") {
-                        forwardMethod.body.push(
-                            createVariableDeclaration(
-                                prevNode.outVarName,
-                                "F." +
-                                    camelToSnake(prevNode.type) +
-                                    "(" +
-                                    prevNode.prevNodes[0].outVarName +
-                                    ")"
-                            )
+                            createVariableDeclaration(lhs, rhs)
                         );
                     }
                 }
@@ -136,6 +148,11 @@
 
         generated_python_code = generatePythonCode(pyModule);
         document.getElementById("source-output").style.display = "block";
+
+        // reset all nodes' evaluated flag
+        for (let node of drawingBoard.moduleNodes) {
+            node.evaluated = false;
+        }
     };
 </script>
 

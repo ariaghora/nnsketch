@@ -209,8 +209,8 @@
         drawingBoard = new DrawingBoard("#drawing-board");
         drawingBoard.loadGraphData(graph);
 
-        drawingBoard.drawingBoardSVG.on("click", drawingBoardOnClick);
-        drawingBoard.drawingBoardSVG.on(
+        drawingBoard.rootDrawingLayer.on("click", drawingBoardOnClick);
+        drawingBoard.rootDrawingLayer.on(
             "contextmenu",
             drawingBoardOnRightClick
         );

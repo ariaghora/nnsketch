@@ -149,7 +149,7 @@ export class ModuleNode {
 
     drawSVG() {
         // SVG group for the node containing all the elements
-        this.nodeSVGContainer = this.drawingBoardRef.editorNodesSVGHolder.group()
+        this.nodeSVGContainer = this.drawingBoardRef.baseDrawingLayer.group()
 
         /**
          * Handle drag and drop events.
@@ -296,7 +296,7 @@ export class ModuleNode {
                 this.drawingBoardRef.lastEventY = e.clientY;
 
                 // Initialize line SVG in the drawing board reference
-                this.drawingBoardRef.connectingLine = this.drawingBoardRef.editorNodesSVGHolder.line(0, 0, 0, 0);
+                this.drawingBoardRef.connectingLine = this.drawingBoardRef.linkDrawingLayer.line(0, 0, 0, 0);
                 this.drawingBoardRef.connectingLine.stroke({ color: "var(--link-color)", width: 2 });
                 this.drawingBoardRef.connectingModeStartCircle = circ;
             })

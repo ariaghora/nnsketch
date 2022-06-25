@@ -3,8 +3,9 @@ import { ModuleLink, ModuleNode } from "./ModuleNode";
 
 
 export class DrawingBoard {
-    drawingBoardSVG: Container;
-    editorNodesSVGHolder: G;
+    rootDrawingLayer: Container;
+    baseDrawingLayer: G;
+    linkDrawingLayer: G;
     moduleNodes: Array<ModuleNode>;
     lastEventX: number;
     lastEventY: number;
@@ -21,8 +22,9 @@ export class DrawingBoard {
     outputModuleNodes: ModuleNode[];
     inputModuleNodes: ModuleNode[];
     constructor(drawingBoardSelector: string) {
-        this.drawingBoardSVG = SVG(drawingBoardSelector);
-        this.editorNodesSVGHolder = this.drawingBoardSVG.group();
+        this.rootDrawingLayer = SVG(drawingBoardSelector);
+        this.linkDrawingLayer = this.rootDrawingLayer.group();
+        this.baseDrawingLayer = this.rootDrawingLayer.group();
         this.moduleNodes = [];
         this.lastEventX = 0;
         this.lastEventY = 0;
@@ -44,12 +46,9 @@ export class DrawingBoard {
         /**
          * This rect serves as a click catcher for the drawing board.
          */
-        let bg = this.editorNodesSVGHolder.rect(
-            window.innerWidth,
-            window.innerHeight
-        ).fill("var(--drawing-board-background-color)");
+        let backgroundDrawingLayer = this.baseDrawingLayer.rect()
 
-        bg.on("click", e => {
+        backgroundDrawingLayer.on("click", e => {
             /**
              * Edge case: the user clicks on the out circle, but followed by clicking anywhere
              * on the drawing board. In this case, if start node is set but end node is not,
@@ -61,7 +60,7 @@ export class DrawingBoard {
             this.unfocusAll()
         })
 
-        this.drawingBoardSVG.on("mousemove", e => {
+        this.rootDrawingLayer.on("mousemove", e => {
             let rect = document.getElementById("drawing-board").getBoundingClientRect();
 
             if (this.connectingMode) {
@@ -124,7 +123,7 @@ export class DrawingBoard {
             target.prevNodes.push(source);
 
             const moduleLink = new ModuleLink()
-            const line = this.editorNodesSVGHolder.line(0, 0, 0, 0)
+            const line = this.linkDrawingLayer.line(0, 0, 0, 0)
             line.stroke({ color: "var(--link-color)", width: 2 })
             moduleLink.setLinkEndpoints(
                 source,

@@ -30,7 +30,7 @@
             null
         );
 
-        let pyModule = {
+        const pyModule = {
             type: "Program",
             body: [
                 createImportDeclaration("torch", [], null, null),
@@ -69,46 +69,6 @@
             }
         }
 
-        const LEARNABLE_LAYER_TYPES = [
-            "Conv2d",
-            "Linear",
-            "BatchNorm2d",
-            "Dropout",
-        ];
-
-        const NONLEARNABLE_LAYER_TYPES = [
-            "Flatten",
-            "ReLU",
-            "Tanh",
-            "Sigmoid",
-            "Softmax",
-            "Softmax2d",
-            "LogSoftmax",
-            "LogSigmoid",
-            "Identity",
-            "MaxPool2d",
-            "AvgPool2d",
-            "AdaptiveAvgPool2d",
-            "AdaptiveMaxPool2d",
-            "Upsample",
-            "UpsampleNearest2d",
-            "UpsampleBilinear2d",
-            "UpsampleTrilinear2d",
-            "Pad",
-            "ReflectionPad",
-            "ReplicationPad",
-            "ReplicationPad2d",
-            "ReplicationPad3d",
-            "ZeroPad2d",
-            "ZeroPad3d",
-            "ConstantPad2d",
-            "ConstantPad3d",
-            "ConstantPad1d",
-            "ConstantPad2d",
-            "ConstantPad3d",
-            "Add",
-        ];
-
         // Topological sort to create assignment statements,
         // starting from output nodes
         let visited = {};
@@ -130,9 +90,12 @@
             }
         };
 
+        /**
+         * We invoke topological sort starting from output nodes.
+         */
         const outputVarNames = [];
         for (let i = 0; i < drawingBoard.outputModuleNodes.length; i++) {
-            let outputNode = drawingBoard.outputModuleNodes[i];
+            const outputNode = drawingBoard.outputModuleNodes[i];
             visit(outputNode);
             const tempOutputVarName = "output_" + (i + 1);
             forwardMethod.body.push(

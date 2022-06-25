@@ -2,21 +2,13 @@
     import { Link } from "svelte-navigator";
 </script>
 
-<svelte:head>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap"
-        rel="stylesheet"
-    />
-    <link
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
-        rel="stylesheet"
-    />
-</svelte:head>
-
 <div id="header">
     <ul id="menu-bar">
         <li class="wrapper">
-            <Link class="my-link" to="/">Drawing</Link>
+            <Link class="my-link" to="/">Project List</Link>
+        </li>
+        <li class="wrapper">
+            <Link class="my-link" to="/drawing-board">Drawing</Link>
         </li>
         <li class="wrapper">
             <Link class="my-link" to="/about">Training</Link>

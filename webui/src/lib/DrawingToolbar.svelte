@@ -59,7 +59,7 @@
         };
 
         for (let node of drawingBoard.moduleNodes) {
-            if (node.name === "Input") {
+            if (node.type === "Input") {
                 /**
                  * If the node is an input node, we need to add it as a parameter to the
                  * forward method.
@@ -67,7 +67,7 @@
                 forwardMethod.params.push(
                     createIdentifier(node.varName, "torch.Tensor")
                 );
-            } else if (node.name === "Conv2d") {
+            } else if (node.type === "Conv2d") {
                 /**
                  * Generate necessary layers as class properties. If the layer has learnable
                  * parameters (e.g., Conv2d, Linear), they will be generated as class properties.
@@ -91,7 +91,7 @@
                     visit(prevNode);
                     // If the layer contains learnable parameters,
                     // add it as a class attribute in init method
-                    if (prevNode.name === "Conv2d") {
+                    if (prevNode.type === "Conv2d") {
                         forwardMethod.body.push(
                             createVariableDeclaration(
                                 prevNode.outVarName,
@@ -102,12 +102,12 @@
                                     ")"
                             )
                         );
-                    } else if (prevNode.name === "MaxPool2d") {
+                    } else if (prevNode.type === "MaxPool2d") {
                         forwardMethod.body.push(
                             createVariableDeclaration(
                                 prevNode.outVarName,
                                 "F." +
-                                    camelToSnake(prevNode.name) +
+                                    camelToSnake(prevNode.type) +
                                     "(" +
                                     prevNode.prevNodes[0].outVarName +
                                     ")"

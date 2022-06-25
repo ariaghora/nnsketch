@@ -2,12 +2,16 @@
     import DrawingBoard from "./lib/DrawingBoard.svelte";
     import Header from "./lib/Header.svelte";
     import { Router, Route } from "svelte-navigator";
+    import ProjectList from "./lib/ProjectList.svelte";
 </script>
 
 <Router>
     <main>
         <Header />
         <Route path="/" primary={false}>
+            <ProjectList />
+        </Route>
+        <Route path="/drawing-board" primary={false}>
             <DrawingBoard />
         </Route>
         <Route path="/about" primary={false}>
@@ -41,6 +45,13 @@
         --highlight-color-main: rgb(35, 119, 99);
         --header-background-color: rgb(51, 51, 51);
         --header-separator-color: rgb(51, 51, 51);
+
+        // vertical gradient color
+        --gradient-1: linear-gradient(
+            to bottom,
+            rgb(224, 224, 224),
+            rgb(186, 186, 186)
+        );
     }
 
     main {

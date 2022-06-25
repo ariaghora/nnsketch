@@ -1,5 +1,5 @@
 import { SVG, G, Container, Line, Circle } from "@svgdotjs/svg.js";
-import { ModuleNode } from "./ModuleNode";
+import { ModuleLink, ModuleNode } from "./ModuleNode";
 
 
 export class DrawingBoard {
@@ -14,6 +14,7 @@ export class DrawingBoard {
     connectingModeStartCircle: Circle;
     connectingModeEndCircle: Circle;
     connectingLine: Line;
+    graphData: Map<Object, Object>;
     smallGridSize: number;
     syntaxTree: Object;
     layerTypeCounter: Object;
@@ -85,9 +86,61 @@ export class DrawingBoard {
 
     }
 
-    addModuleNode(name: string, x: number, y: number, nIn: number, nOut: number) {
-        let moduleNode = new ModuleNode(name, x, y, nIn, nOut, this);
+    addModuleNode(type: string, varName: string, x: number, y: number, nIn: number, nOut: number) {
+        let moduleNode = new ModuleNode(type, varName, x, y, nIn, nOut, this);
         this.moduleNodes.push(moduleNode);
+    }
+
+    loadGraphData(graphData: Map<Object, Object>) {
+        this.graphData = graphData;
+        graphData.nodes.forEach(node => {
+            this.addModuleNode(
+                node.type,
+                node.varName,
+                node.x,
+                node.y,
+                node.nIn,
+                node.nOut,
+            )
+            this.moduleNodes[this.moduleNodes.length - 1].outLinks = new Array(node.nOut);
+            this.moduleNodes[this.moduleNodes.length - 1].inLinks = new Array(node.nIn);
+        });
+
+        graphData.links.forEach(link => {
+            let source: ModuleNode;
+            let target: ModuleNode;
+            let sourceCircleIndex: number;
+            let targetCircleIndex: number;
+
+            this.moduleNodes.forEach(node => {
+                if (link.source.varName == node.varName) {
+                    source = node;
+                    sourceCircleIndex = link.source.circleIndex;
+                }
+                if (link.target.varName == node.varName) {
+                    target = node;
+                    targetCircleIndex = link.target.circleIndex;
+                }
+            });
+
+            target.prevNodes.push(source);
+
+            const moduleLink = new ModuleLink()
+            const line = this.editorNodesSVGHolder.line(0, 0, 0, 0)
+            line.stroke({ color: "var(--link-color)", width: 2 })
+            moduleLink.setLinkEndpoints(
+                source,
+                target,
+                source.outCircles[sourceCircleIndex],
+                target.inCircles[targetCircleIndex],
+                line
+            );
+
+            source.outLinks[sourceCircleIndex] = moduleLink;
+            target.inLinks[targetCircleIndex] = moduleLink;
+
+            moduleLink.updateLinePosition()
+        });
     }
 
     unfocusAll() {

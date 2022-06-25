@@ -33,7 +33,7 @@
         const input = event.target as HTMLInputElement;
         const value = input.value;
         filtered_editor_nodes = editor_nodes.filter((node) =>
-            node.name.toLowerCase().includes(value.toLowerCase())
+            node.type.toLowerCase().includes(value.toLowerCase())
         );
         if (value.length == 0) {
             filtered_editor_nodes = editor_nodes;
@@ -74,6 +74,21 @@
         filtered_editor_nodes = editor_nodes;
     };
 
+    const createDefaultVarName = function (
+        layerName: string,
+        drawingBoard: DrawingBoard
+    ) {
+        // Increase layer type counter in the drawing board.
+        drawingBoard.layerTypeCounter[layerName] =
+            (drawingBoard.layerTypeCounter[layerName] || 0) + 1;
+        // set the var name to the layer name + the layer type counter.
+        let name =
+            layerName.toLowerCase() +
+            "_" +
+            drawingBoard.layerTypeCounter[layerName];
+        return name;
+    };
+
     const menuItemOnClick = function (e: MouseEvent) {
         const menu = document.getElementById("context-menu-wrapper");
         const nodeName = this.getAttribute("data-node-name");
@@ -82,6 +97,7 @@
 
         drawingBoard.addModuleNode(
             nodeName,
+            createDefaultVarName(nodeName, drawingBoard),
             Math.floor(drawingBoard.lastEventX / drawingBoard.smallGridSize) *
                 drawingBoard.smallGridSize,
             Math.floor(drawingBoard.lastEventY / drawingBoard.smallGridSize) *
@@ -92,8 +108,107 @@
         menu.style.display = "none";
     };
 
+    let graph = {
+        nodes: [
+            {
+                varName: "input_1",
+                type: "Input",
+                x: 100,
+                y: 100,
+                nIn: 0,
+                nOut: 1,
+            },
+            {
+                varName: "conv2d_1",
+                type: "Conv2d",
+                x: 300,
+                y: 100,
+                nIn: 1,
+                nOut: 1,
+            },
+            {
+                varName: "output_1",
+                type: "Output",
+                x: 500,
+                y: 100,
+                nIn: 1,
+                nOut: 0,
+            },
+            {
+                varName: "add_1",
+                type: "Add",
+                x: 500,
+                y: 200,
+                nIn: 2,
+                nOut: 1,
+            },
+            {
+                varName: "output_2",
+                type: "Output",
+                x: 700,
+                y: 200,
+                nIn: 1,
+                nOut: 0,
+            },
+        ],
+        links: [
+            {
+                source: {
+                    varName: "input_1",
+                    circleIndex: 0,
+                },
+                target: {
+                    varName: "conv2d_1",
+                    circleIndex: 0,
+                },
+            },
+            {
+                source: {
+                    varName: "conv2d_1",
+                    circleIndex: 0,
+                },
+                target: {
+                    varName: "output_1",
+                    circleIndex: 0,
+                },
+            },
+            {
+                source: {
+                    varName: "conv2d_1",
+                    circleIndex: 0,
+                },
+                target: {
+                    varName: "add_1",
+                    circleIndex: 0,
+                },
+            },
+            {
+                source: {
+                    varName: "input_1",
+                    circleIndex: 0,
+                },
+                target: {
+                    varName: "add_1",
+                    circleIndex: 1,
+                },
+            },
+            {
+                source: {
+                    varName: "add_1",
+                    circleIndex: 0,
+                },
+                target: {
+                    varName: "output_2",
+                    circleIndex: 0,
+                },
+            },
+        ],
+    };
+
     onMount(() => {
         drawingBoard = new DrawingBoard("#drawing-board");
+        drawingBoard.loadGraphData(graph);
+
         drawingBoard.drawingBoardSVG.on("click", drawingBoardOnClick);
         drawingBoard.drawingBoardSVG.on(
             "contextmenu",

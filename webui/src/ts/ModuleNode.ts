@@ -1,16 +1,8 @@
 import type { G, Circle, Line } from "@svgdotjs/svg.js";
 import type { DrawingBoard } from "./DrawingBoard";
 
-const createDefaultVarName = function (layerName: string, drawingBoard: DrawingBoard) {
-    // Increase layer type counter in the drawing board.
-    drawingBoard.layerTypeCounter[layerName] = (drawingBoard.layerTypeCounter[layerName] || 0) + 1;
-    // set the var name to the layer name + the layer type counter.
-    let name = layerName.toLowerCase() + "_" + drawingBoard.layerTypeCounter[layerName];
-    return name
-}
-
 const setOutVarName = function (node: ModuleNode, drawingBoard: DrawingBoard) {
-    if (node.name === "Input" || node.name === "Output") {
+    if (node.type === "Input" || node.type === "Output") {
         return node.varName
     } else {
         return node.varName + "_out"
@@ -28,7 +20,7 @@ export class ModuleNode {
     h: number;
     nIn: number;
     nOut: number;
-    name: string;
+    type: string;
     prevNodes: ModuleNode[];
     nextNodes: ModuleNode[];
     drawingBoardRef: DrawingBoard;
@@ -40,16 +32,16 @@ export class ModuleNode {
     syntaxTree: any;
     varName: string;
     outVarName: string;
-    constructor(name: string, x: number, y: number, nIn: number, nOut: number, drawingBoardRef: DrawingBoard) {
+    constructor(type: string, varName: string, x: number, y: number, nIn: number, nOut: number, drawingBoardRef: DrawingBoard) {
         this.x = x;
         this.y = y;
         this.w = 120;
         this.h = 50;
         this.nIn = nIn;
         this.nOut = nOut;
-        this.name = name;
+        this.type = type;
+        this.varName = varName;
 
-        this.varName = "";
         this.prevNodes = [];
         this.nextNodes = [];
         this.drawingBoardRef = drawingBoardRef;
@@ -60,12 +52,12 @@ export class ModuleNode {
         this.outLinks = [];
         this.syntaxTree = null;
 
-        this.varName = createDefaultVarName(this.name, this.drawingBoardRef);
+        // this.varName = createDefaultVarName(this.type, this.drawingBoardRef);
         this.outVarName = setOutVarName(this, this.drawingBoardRef);
 
-        if (this.name == "Input") {
+        if (this.type == "Input") {
             this.drawingBoardRef.inputModuleNodes.push(this);
-        } else if (this.name == "Output") {
+        } else if (this.type == "Output") {
             this.drawingBoardRef.outputModuleNodes.push(this);
         }
 
@@ -121,7 +113,7 @@ export class ModuleNode {
         /**
          *  Node label part
          * */
-        let label = this.nodeSVGContainer.text(this.name);
+        let label = this.nodeSVGContainer.text(this.type);
         label.font({
             family: "var(--monospace-font)",
             size: "12px",
@@ -169,7 +161,7 @@ export class ModuleNode {
                         this.drawingBoardRef.connectingModeEndNode = this;
                         this.drawingBoardRef.connectingModeEndCircle = circ;
 
-                        let link = new ModuleLink();
+                        const link = new ModuleLink();
                         link.setLinkEndpoints(
                             this.drawingBoardRef.connectingModeStartNode,
                             this.drawingBoardRef.connectingModeEndNode,

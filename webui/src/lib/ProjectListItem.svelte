@@ -23,13 +23,15 @@
         border-radius: 5px;
         background-image: var(--gradient-1);
         padding: 10px;
-        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.6);
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(162, 156, 156, 0.7);
         cursor: pointer;
         .project-list-item-name {
             font-family: var(--monospace-font);
             font-size: 14px;
             font-weight: bold;
             text-align: center;
+            padding-top: 10px;
         }
         .preview {
             width: 100%;

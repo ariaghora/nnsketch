@@ -22,12 +22,12 @@
 
 <style lang="scss">
     .project-list {
+        background-color: var(--background-color-1);
+        height: 100vh;
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 0.2fr));
         grid-gap: 40px;
-        margin: 20px;
-        padding: 20px;
-        border-radius: 5px;
+        padding: 40px;
         font-size: 14px;
         font-weight: normal;
         text-align: left;

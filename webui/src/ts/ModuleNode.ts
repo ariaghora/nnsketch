@@ -135,7 +135,7 @@ export class ModuleNode {
             return this.outVarName
         } else {
             this.evaluated = true
-            const outVarNames = this.prevNodes.map(n => n.outVarName).join(",")
+            const outVarNames = this.prevNodes.map(n => n.outVarName).join(", ")
             if (LEARNABLE_LAYER_TYPES.indexOf(this.type) >= 0) {
                 return "self." + this.varName + "(" + outVarNames + ")"
             } else if (NONLEARNABLE_LAYER_TYPES.indexOf(this.type) >= 0) {

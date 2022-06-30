@@ -274,7 +274,7 @@
         position: absolute;
         top: 0;
         cursor: crosshair;
-        width: 100%;
+        width: 150%;
         height: calc(100% - var(--header-height));
         background-color: var(--drawing-board-background-color);
         margin-top: var(--header-height);

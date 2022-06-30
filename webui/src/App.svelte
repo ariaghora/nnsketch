@@ -34,10 +34,10 @@
         --source-output-panel-width: 50%;
 
         --background-color-1: #dcdcdc;
-        --drawing-board-background-color: #181818;
+        --drawing-board-background-color: #292929;
         --node-background-color: #303030;
         --node-foreground-color: #cecece;
-        --node-border-color: #7d9184;
+        --node-border-color: #a3c2ae;
         --node-input-color: #27cc8f;
         --node-output-color: #d42d89;
         --node-output-color-selected: #a95e88;

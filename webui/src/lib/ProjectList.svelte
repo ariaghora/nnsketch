@@ -26,6 +26,7 @@
         height: 100vh;
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 0.2fr));
+        grid-template-rows: repeat(auto-fit, minmax(0px, 0.2fr));
         grid-gap: 40px;
         padding: 40px;
         font-size: 14px;
